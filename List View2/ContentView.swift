@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         FirstView()// Firstviewを表示
-//        SecondView()//
+        //        SecondView()//
     }
 }
 
@@ -44,7 +44,7 @@ struct FirstView: View {
                 //並び替えが起きたときに実行される
                 .onDelete(perform: deleteRow)//削除
                 .onMove (perform: replaceRow)//並び替え
-                }
+            }
             
             .navigationTitle("Task List")//画面上のタイトル
             //ナビゲーションバーに編集ボタンを追加
@@ -55,26 +55,29 @@ struct FirstView: View {
     }
     // 並び替え処理 & 保存
     func replaceRow(_ from: IndexSet, _ to: Int) {
-        tasksArray.move(fromOffsets: from, toOffset: to)
-        saveTasks()
+        var newArray = tasksArray
+        newArray.move(fromOffsets: from, toOffset: to)
+        saveTasks(newArray)
     }
-
+    
     // 削除処理 & 保存
     func deleteRow(at offsets: IndexSet) {
-        tasksArray.remove(atOffsets: offsets)
-        saveTasks()
+        var newArray = tasksArray
+        newArray.remove(atOffsets: offsets)
+        saveTasks(newArray)
     }
-
+    
     // タスクの保存処理（UserDefaults）
-    func saveTasks() {
-        if let encodedArray = try? JSONEncoder().encode(tasksArray) {
+    func saveTasks(_ newArray: [Task]) {
+        if let encodedArray = try? JSONEncoder().encode(newArray) {
             tasksData = encodedArray
+            tasksArray = newArray
         }
     }
 }
 
 
-    //並び替え処理 と並び替え後の保存
+//並び替え処理 と並び替え後の保存
 //    func replaceRow(_ from: IndexSet, _ to: Int) {
 //        tasksArray.move(fromOffsets: from, toOffset: to)//配列内での並び替え
 //        if let encodedArray = try? JSONEncoder().encode(tasksArray) {
@@ -134,7 +137,7 @@ struct SecondView: View {
 }
 
 
-    
+
 
 
 
